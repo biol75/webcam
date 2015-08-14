@@ -18,6 +18,7 @@ import com.github.sarxos.webcam.Webcam;
  * @date 2014 12 15 first release
  * @date 2015 01 14 added macro support and custom resolutions thanks to Jarom Jackson
  * @date 2015 02 03 added proper macro support using GenericDialog for options thanks to Wayne Rasband
+ * @date 2015 08 14 modified to capture avi (Chris Elliott, biol75@york.ac.uk)
  */
 
 public class IJ_webcam_plugin implements PlugIn {
