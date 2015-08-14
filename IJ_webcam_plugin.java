@@ -1,5 +1,6 @@
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Macro;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
@@ -59,22 +60,42 @@ public class IJ_webcam_plugin implements PlugIn {
             
             
             int i=0;
-			while (null != imp.getWindow() && i < iMax) {
+            while (null != imp.getWindow() && i < iMax) {
 
 				if (camera.isImageNew()) {
 					image = camera.getImage();
 					imp2 = new ImagePlus("tmp", image);
-					ip = imp2.getProcessor();
-					imp.setProcessor(ip);
-					imp.updateAndDraw();
+                    ip = imp2.getProcessor();
+                    imp.setProcessor(ip);
+                    
+                    
                     if (IJ.escapePressed()) {
-                        IJ.saveAs ("PNG",  "/Users/cje2/Data/IJTest_webcam/Snapper" + i + ".png");
+                        
+                        // Add image to stack of current Image Plus Object
+                        ImageStack imageStack = imp.getImageStack();
+                        imageStack.addSlice("", new ColorProcessor(image));
+                        imp.setStack("", imageStack);
+                        imp.setSlice(imageStack.getSize());
+                        
+                        imp.setTitle("Done " + i);
+                        imageStack = null;
+
                         i ++ ;
                         IJ.wait (sample_interval);
                     }
-
+                  imp.updateAndDraw();
+                    
 				}
 			}
+
+            /*ip = stack.getProcessor(); /*ImageProcessor */
+            /*Calibration cal=ip.getCalibration();
+            cal.fps=1000/sample_interval; /* bug when < 1 fps ??
+            ip.setCalibration(cal); */
+            if (i > 0)
+            {
+               IJ.saveAs (imp, "AVI",  "/Users/cje2/Data/IJTest_webcam/Snapmvi" + i + ".avi");
+            }
 			imp.setTitle("Done");
 			camera.close();
 		}
